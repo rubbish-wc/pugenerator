@@ -27,7 +27,6 @@ import java.util.Map;
  * @since 2018-09-12
  */
 @SpringBootApplication
-@ComponentScan({"cn.pubud.pugenerator"})
 public class GeneratorApplication {
 
     /**

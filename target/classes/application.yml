@@ -2,9 +2,9 @@ authorName: zdy
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/pubud?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:mysql://rm-wz9794vc2ah3g166vio.mysql.rds.aliyuncs.com/authentication_center?useUnicode=true&characterEncoding=utf8
     username: root
-    password: 123456
+    password: Ww4247794!
     driver-class-name: com.mysql.cj.jdbc.Driver
   thymeleaf:
     suffix: ".html"

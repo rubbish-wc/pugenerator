@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 
 /**
  * @Author: charleyZZZZ
@@ -23,7 +24,42 @@ class IndexConfig {
     @EventListener({ApplicationReadyEvent.class})
     void applicationReadyEvent() throws IOException {
         LOGGER.info("应用已经准备就绪 ... 启动浏览器 ... 自动打开代码生成界面 ...");
-        Runtime runtime = Runtime.getRuntime();
-        runtime.exec("rundll32 url.dll,FileProtocolHandler " + URL);
+        String osName = System.getProperty("os.name");
+        try
+        {
+            if (osName.startsWith("Mac OS"))
+            {
+                //doc
+                Class fileMgr = Class.forName("com.apple.eio.FileManager");
+                Method openURL = fileMgr.getDeclaredMethod("openURL", new Class[] {String.class});
+                openURL.invoke(null, new Object[] {URL});
+            }
+            else if (osName.startsWith("Windows"))
+            {
+                //Windows
+                Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + URL);
+            }
+            else
+            {
+                //assume Unix or Linux
+                String[] browsers = {"firefox", "opera", "konqueror", "epiphany", "mozilla", "netscape"};
+                String browser = null;
+                for (int count = 0; count < browsers.length && browser == null; count++)
+                {
+                    if (Runtime.getRuntime().exec(new String[] {"which", browsers[count]}).waitFor() == 0)
+                    {
+                        browser = browsers[count];
+                    }
+                }
+                if (browser != null)
+                {
+                    Runtime.getRuntime().exec(new String[] {browser, URL});
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            //ExpWork.doExp(ex);
+        }
     }
 }
