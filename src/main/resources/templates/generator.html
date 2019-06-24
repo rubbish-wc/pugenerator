@@ -1,0 +1,121 @@
+<!DOCTYPE html >
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <script src="../webjars/jquery/3.1.1/jquery.js"></script>
+    <script src="../webjars/bootstrap/3.3.5/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="../webjars/bootstrap/3.3.5/css/bootstrap.css"/>
+     
+    <title th:text="${title}">Title</title>
+</head>
+<style>
+    .successClass{
+        color: green;
+    }
+
+    .errorClass{
+        clear: red;
+    }
+</style>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 " style="margin-top:50px; ">
+            <form class="form-horizontal" method="post" action="/generator/submit">
+                <!-- 表单区域-->
+                <fieldset>
+                    <!--表单主题-->
+                    <legend >负能量厕所 专用代码生成器</legend>
+                    <!-- 每一个form-group都可以自定义布局-->
+                    <div class="form-group">
+                        <!-- label表示文字提示标签,可以通过表单的组建的id提示-->
+                        <label class="col-md-2 control-label" for="tableName">表名: </label>
+                        <div class="col-md-4">
+                            <input class="form-control" name="tableName" placeholder="sys_user" id="tableName"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <!-- label表示文字提示标签,可以通过表单的组建的id提示-->
+                        <label class="col-md-2 control-label" for="codePackage">包名: </label>
+                        <div class="col-md-4">
+                            <input class="form-control" name="codePackage" id="codePackage" placeholder="com.pubud.example"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <!-- label表示文字提示标签,可以通过表单的组建的id提示-->
+                        <label class="col-md-2 control-label" for="codePath">保存路径: </label>
+                        <div class="col-md-4">
+                            <input class="form-control" id="codePath"  name="codePath" placeholder="D:\\generate\pubud"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-6 col-md-offset-3">
+                            <input class="btn btn-primary" type="submit" value="生成"/>
+                            <input class="btn btn-warning" type="reset" value="重置"/>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+
+            <p th:text="${message}" th:class="${success}? successClass : errorClass"></p>
+
+            <table id="table-div" class="table" style="margin-top: 20px">
+                <thead>
+                <tr>
+                    <th scope="col">表名</th>
+                    <th scope="col">Engine</th>
+                    <th scope="col">创建时间</th>
+                    <th scope="col">字符集</th>
+                    <th scope="col">备注</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+
+    $(function () {
+        /*监听input值的变化*/
+        $("#tableName").bind("input propertychange", function () {
+
+            $.ajax({
+                url: "/generator/table/" + $(this).val(),
+                type: 'get',
+                dataType: 'json',
+                contentType: 'application/json',
+                async: true,
+                success: function (data) {
+                    if (data != null) {
+                        var tbodyStr = "";
+                        for (var i = 0; i < data.length; i++) {
+                            tbodyStr += "<tr>"
+                                + "<td>" + data[i].tableName + "</td>"
+                                + "<td>" + data[i].engine + "</td>"
+                                + "<td>" + data[i].createTime + "</td>"
+                                + "<td>" + data[i].tableCollation + "</td>"
+                                + "<td>" + data[i].tableComment + "</td>"
+                                + "</tr>";
+                        }
+                        var $tbody =$("#table-div tbody");
+                        $tbody.html(tbodyStr);
+                    }
+                }
+            });
+        });
+    });
+
+
+</script>
+
+</body>
+</html>

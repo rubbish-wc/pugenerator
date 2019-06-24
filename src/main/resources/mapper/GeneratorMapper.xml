@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.pubud.pugenerator.mapper.GeneratorMapper">
+
+    <resultMap id="baseResultMap" type="cn.pubud.pugenerator.entity.Table">
+        <result column="TABLE_NAME" property="tableName" jdbcType="VARCHAR"/>
+        <result column="ENGINE" property="engine" jdbcType="VARCHAR"/>
+        <result column="CREATE_TIME" property="createTime" jdbcType="DATE"/>
+        <result column="TABLE_COLLATION" property="tableCollation" jdbcType="VARCHAR"/>
+        <result column="TABLE_COMMENT" property="tableComment" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectTableInfo"
+            parameterType="java.lang.String"
+            resultMap="baseResultMap">
+            SELECT
+                TABLE_NAME,
+                `ENGINE`,
+                CREATE_TIME,
+                TABLE_COLLATION,
+                TABLE_COMMENT
+            FROM
+                information_schema.TABLES
+            WHERE
+                table_schema = "pubud"
+            AND table_name LIKE concat('%',concat(#{_parameter},'%'));
+    </select>
+
+
+</mapper>
